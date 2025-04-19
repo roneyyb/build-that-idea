@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Settings, ExternalLink, Trash2, CheckCircle2, XCircle, Search, Filter } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Agent {
     name: string;
@@ -159,74 +160,78 @@ export default function AgentDashboard() {
             </div>
             {/* Agent list */}
             <div className="space-y-4">
-                {filtered.map((agent) => {
-                    const id = agent.name + agent.createdAt;
-                    return (
-                        <div
-                            key={id}
-                            className={`relative rounded-xl border border-dotted border-[#d1cfcf] bg-white p-5 flex flex-col gap-3 shadow-sm transition-all hover:shadow-md min-w-[320px] animate-fade-in-up ${selected.has(id) ? 'ring-2 ring-orange-400' : ''}`}
-                            style={{ animationDelay: `${0.04 * (filtered.findIndex(a => (a.name + a.createdAt) === id))}s` }}
-                        >
-                            <div className="flex items-center gap-3">
-                                <input type="checkbox" checked={selected.has(id)} onChange={() => toggleSelect(id)} className="accent-orange-400" />
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="text-lg font-bold text-[#020817] tracking-tight">{agent.name}</h3>
-                                        <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${agent.status === 'active' ? 'bg-[#e7f6ea] text-[#2e7d32]' : 'bg-gray-200 text-gray-600'}`}>{agent.status}</span>
+                <AnimatePresence>
+                    {filtered.map((agent, idx) => {
+                        const id = agent.name + agent.createdAt;
+                        return (
+                            <motion.div
+                                key={id}
+                                initial={{ opacity: 0, y: 32 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 32 }}
+                                transition={{ duration: 0.5, delay: idx * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                                className={`relative rounded-xl   bg-white p-5 flex flex-col gap-3 shadow-sm transition-all hover:shadow-md min-w-[320px] ${selected.has(id) ? 'ring-2 ring-orange-400' : ''}`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <input type="checkbox" checked={selected.has(id)} onChange={() => toggleSelect(id)} className="accent-orange-400" />
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="text-lg font-bold text-[#020817] tracking-tight">{agent.name}</h3>
+                                            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${agent.status === 'active' ? 'bg-[#e7f6ea] text-[#2e7d32]' : 'bg-gray-200 text-gray-600'}`}>{agent.status}</span>
+                                        </div>
+                                        <div className="text-xs text-gray-400 font-medium">{agent.type}</div>
+                                        <div className="text-xs text-gray-400">{agent.description}</div>
                                     </div>
-                                    <div className="text-xs text-gray-400 font-medium">{agent.type}</div>
-                                    <div className="text-xs text-gray-400">{agent.description}</div>
                                 </div>
-                            </div>
-                            <div className="flex flex-col gap-1 mt-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs font-medium text-[#7c6f5c]">Token Usage</span>
-                                    <span className="text-xs font-semibold text-[#7c6f5c]">{agent.tokenUsage?.toLocaleString?.()} / {agent.maxTokens?.toLocaleString?.()}</span>
+                                <div className="flex flex-col gap-1 mt-2">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xs font-medium text-[#7c6f5c]">Token Usage</span>
+                                        <span className="text-xs font-semibold text-[#7c6f5c]">{agent.tokenUsage?.toLocaleString?.()} / {agent.maxTokens?.toLocaleString?.()}</span>
+                                    </div>
+                                    <div className="w-full h-2 rounded-full bg-[#ede8e3] relative overflow-hidden">
+                                        <div className="h-2 rounded-full bg-[#8d6e63] transition-all" style={{ width: `${(agent.tokenUsage / agent.maxTokens) * 100}%` }} />
+                                    </div>
                                 </div>
-                                <div className="w-full h-2 rounded-full bg-[#ede8e3] relative overflow-hidden">
-                                    <div className="h-2 rounded-full bg-[#8d6e63] transition-all" style={{ width: `${(agent.tokenUsage / agent.maxTokens) * 100}%` }} />
+                                <div className="flex flex-col gap-2 md:items-end">
+                                    <div className="flex gap-2 items-center">
+                                        <button
+                                            className="px-4 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold text-xs hover:bg-blue-100 border border-blue-100 shadow-sm transition-colors"
+                                            onClick={() => window.location.href = `/dashboard/agents/AgentDetailPage?id=${agent.createdAt}`}
+                                        >
+                                            View Details
+                                        </button>
+                                        <button
+                                            className="px-4 py-1 rounded-full bg-gray-50 text-gray-700 font-semibold text-xs hover:bg-gray-100 border border-gray-200 shadow-sm transition-colors"
+                                            onClick={() => window.location.href = `/create-agent?id=${agent.createdAt}`}
+                                        >
+                                            Edit
+                                        </button>
+                                        <label className="flex items-center cursor-pointer select-none ml-2">
+                                            <span className="mr-1 text-xs">{agent.status === 'active' ? 'Enabled' : 'Disabled'}</span>
+                                            <input
+                                                type="checkbox"
+                                                checked={agent.status === 'active'}
+                                                onChange={() => {
+                                                    const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
+                                                    setAgents(updated);
+                                                    localStorage.setItem('agents', JSON.stringify(updated));
+                                                }}
+                                                className="form-checkbox h-4 w-4 text-green-600"
+                                            />
+                                        </label>
+                                        <button
+                                            className="px-4 py-1 rounded-full bg-red-50 text-red-600 font-semibold text-xs hover:bg-red-100 border border-red-100 shadow-sm transition-colors flex items-center gap-1"
+                                            onClick={() => handleBatch('delete')}
+                                        >
+                                            <Trash2 className="h-4 w-4" /> Delete
+                                        </button>
+                                    </div>
+                                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${agent.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>{agent.status}</span>
                                 </div>
-                            </div>
-                            <div className="flex flex-col gap-2 md:items-end">
-                                <div className="flex gap-2 items-center">
-                                    <button
-                                        className="px-4 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold text-xs hover:bg-blue-100 border border-blue-100 shadow-sm transition-colors"
-                                        onClick={() => window.location.href = `/dashboard/agents/AgentDetailPage?id=${agent.createdAt}`}
-                                    >
-                                        View Details
-                                    </button>
-                                    <button
-                                        className="px-4 py-1 rounded-full bg-gray-50 text-gray-700 font-semibold text-xs hover:bg-gray-100 border border-gray-200 shadow-sm transition-colors"
-                                        onClick={() => window.location.href = `/create-agent?id=${agent.createdAt}`}
-                                    >
-                                        Edit
-                                    </button>
-                                    <label className="flex items-center cursor-pointer select-none ml-2">
-                                        <span className="mr-1 text-xs">{agent.status === 'active' ? 'Enabled' : 'Disabled'}</span>
-                                        <input
-                                            type="checkbox"
-                                            checked={agent.status === 'active'}
-                                            onChange={() => {
-                                                const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
-                                                setAgents(updated);
-                                                localStorage.setItem('agents', JSON.stringify(updated));
-                                            }}
-                                            className="form-checkbox h-4 w-4 text-green-600"
-                                        />
-                                    </label>
-                                    <button
-                                        className="px-4 py-1 rounded-full bg-red-50 text-red-600 font-semibold text-xs hover:bg-red-100 border border-red-100 shadow-sm transition-colors flex items-center gap-1"
-                                        onClick={() => handleBatch('delete')}
-                                    >
-                                        <Trash2 className="h-4 w-4" /> Delete
-                                    </button>
-                                </div>
-                                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${agent.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>{agent.status}</span>
-                            </div>
-                        </div>
-                    );
-                })}
+                            </motion.div>
+                        );
+                    })}
+                </AnimatePresence>
             </div>
         </div>
     );
-}
