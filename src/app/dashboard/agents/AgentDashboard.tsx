@@ -87,18 +87,37 @@ export default function AgentDashboard() {
 
     return (
         <div className="space-y-8">
+            <h1 className="text-3xl font-extrabold text-[#020817] mb-2 tracking-tight drop-shadow-sm">My Agents</h1>
             {/* Controls */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div className="flex gap-2 items-center">
                     <input
-                        className="border rounded px-3 py-2 text-sm"
+                        className="w-56 rounded border-[1.5px] border-[#020817]/20 px-3 py-2 text-base text-[#020817] focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-[#020817]/50 transition-all"
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Search agents..."
                     />
-                    <button onClick={() => setFilter({ status: undefined })} className="ml-2 px-2 py-1 rounded bg-gray-100 text-gray-700 flex items-center"><Filter className="w-4 h-4 mr-1" />All</button>
-                    <button onClick={() => setFilter({ status: "active" })} className="px-2 py-1 rounded bg-green-100 text-green-700 flex items-center"><CheckCircle2 className="w-4 h-4 mr-1" />Active</button>
-                    <button onClick={() => setFilter({ status: "inactive" })} className="px-2 py-1 rounded bg-gray-200 text-gray-700 flex items-center"><XCircle className="w-4 h-4 mr-1" />Inactive</button>
+                    <button
+                        onClick={() => setFilter({ status: undefined })}
+                        className={`ml-2 px-3 py-1 rounded-full flex items-center gap-1 text-xs font-semibold border transition-colors
+                            ${filter.status === undefined ? 'bg-[#020817] text-white border-[#020817] shadow' : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200'}`}
+                    >
+                        <Filter className="w-4 h-4 mr-1" />All
+                    </button>
+                    <button
+                        onClick={() => setFilter({ status: 'active' })}
+                        className={`px-3 py-1 rounded-full flex items-center gap-1 text-xs font-semibold border transition-colors
+                            ${filter.status === 'active' ? 'bg-green-600 text-white border-green-600 shadow' : 'bg-green-100 text-green-700 border-green-200 hover:bg-green-200'}`}
+                    >
+                        <CheckCircle2 className="w-4 h-4 mr-1" />Active
+                    </button>
+                    <button
+                        onClick={() => setFilter({ status: 'inactive' })}
+                        className={`px-3 py-1 rounded-full flex items-center gap-1 text-xs font-semibold border transition-colors
+                            ${filter.status === 'inactive' ? 'bg-gray-700 text-white border-gray-700 shadow' : 'bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300'}`}
+                    >
+                        <XCircle className="w-4 h-4 mr-1" />Inactive
+                    </button>
                 </div>
                 <div className="flex gap-2 items-center">
                     <label className="text-sm">Sort by:</label>
@@ -122,20 +141,20 @@ export default function AgentDashboard() {
             {/* Analytics summary */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="rounded-lg bg-white shadow p-4 flex flex-col items-center">
-                    <div className="text-lg font-bold">{agents.reduce((sum, a) => sum + (a.messagesProcessed || 0), 0)}</div>
-                    <div className="text-gray-500 text-sm">Total Messages</div>
+                    <div className="text-lg font-bold text-[#020817]">{agents.reduce((sum, a) => sum + (a.messagesProcessed || 0), 0)}</div>
+                    <div className="text-[#020817]  text-sm">Total Messages</div>
                 </div>
                 <div className="rounded-lg bg-white shadow p-4 flex flex-col items-center">
-                    <div className="text-lg font-bold">{agents.length}</div>
-                    <div className="text-gray-500 text-sm">Total Agents</div>
+                    <div className="text-lg font-bold text-[#020817]">{agents.length}</div>
+                    <div className="text-[#020817]  text-sm">Total Agents</div>
                 </div>
                 <div className="rounded-lg bg-white shadow p-4 flex flex-col items-center">
-                    <div className="text-lg font-bold">{((agents.reduce((sum, a) => sum + (a.engagement || 0), 0) / (agents.length || 1)) * 100).toFixed(1)}%</div>
-                    <div className="text-gray-500 text-sm">Avg. Engagement</div>
+                    <div className="text-lg font-bold text-[#020817]">{((agents.reduce((sum, a) => sum + (a.engagement || 0), 0) / (agents.length || 1)) * 100).toFixed(1)}%</div>
+                    <div className="text-[#020817]  text-sm">Avg. Engagement</div>
                 </div>
                 <div className="rounded-lg bg-white shadow p-4 flex flex-col items-center">
-                    <div className="text-lg font-bold">{((agents.filter(a => a.isPaid).reduce((sum, a) => sum + (a.conversionRate || 0), 0) / (agents.filter(a => a.isPaid).length || 1)) * 100).toFixed(1)}%</div>
-                    <div className="text-gray-500 text-sm">Avg. Conversion (Paid)</div>
+                    <div className="text-lg font-bold text-[#020817]">{((agents.filter(a => a.isPaid).reduce((sum, a) => sum + (a.conversionRate || 0), 0) / (agents.filter(a => a.isPaid).length || 1)) * 100).toFixed(1)}%</div>
+                    <div className="text-[#020817]  text-sm">Avg. Conversion (Paid)</div>
                 </div>
             </div>
             {/* Agent list */}
@@ -143,55 +162,65 @@ export default function AgentDashboard() {
                 {filtered.map((agent) => {
                     const id = agent.name + agent.createdAt;
                     return (
-                        <div key={id} className={`rounded-lg border bg-white p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 ${selected.has(id) ? 'ring-2 ring-orange-400' : ''}`}>
-                            <div className="flex items-center gap-2">
-                                <input type="checkbox" checked={selected.has(id)} onChange={() => toggleSelect(id)} />
+                        <div
+                            key={id}
+                            className={`relative rounded-xl border border-dotted border-[#d1cfcf] bg-white p-5 flex flex-col gap-3 shadow-sm transition-all hover:shadow-md min-w-[320px] animate-fade-in-up ${selected.has(id) ? 'ring-2 ring-orange-400' : ''}`}
+                            style={{ animationDelay: `${0.04 * (filtered.findIndex(a => (a.name + a.createdAt) === id))}s` }}
+                        >
+                            <div className="flex items-center gap-3">
+                                <input type="checkbox" checked={selected.has(id)} onChange={() => toggleSelect(id)} className="accent-orange-400" />
                                 <div>
-                                    <h3 className="text-lg font-semibold">{agent.name}</h3>
-                                    <p className="text-sm text-gray-500">{agent.type}</p>
-                                    <p className="text-xs text-gray-400">{agent.description}</p>
-                                    <p className="text-xs text-gray-400">Created: {agent.createdAt ? new Date(agent.createdAt).toLocaleString() : "-"}</p>
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="text-lg font-bold text-[#020817] tracking-tight">{agent.name}</h3>
+                                        <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${agent.status === 'active' ? 'bg-[#e7f6ea] text-[#2e7d32]' : 'bg-gray-200 text-gray-600'}`}>{agent.status}</span>
+                                    </div>
+                                    <div className="text-xs text-gray-400 font-medium">{agent.type}</div>
+                                    <div className="text-xs text-gray-400">{agent.description}</div>
                                 </div>
                             </div>
-                            <div className="flex-1 flex flex-col gap-2">
-                                <div className="text-sm text-gray-500">Token Usage</div>
-                                <div className="relative h-2 w-full rounded-full bg-gray-200">
-                                    <div className="absolute h-2 rounded-full bg-orange-500" style={{ width: `${(agent.tokenUsage / agent.maxTokens) * 100}%` }} />
+                            <div className="flex flex-col gap-1 mt-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-medium text-[#7c6f5c]">Token Usage</span>
+                                    <span className="text-xs font-semibold text-[#7c6f5c]">{agent.tokenUsage?.toLocaleString?.()} / {agent.maxTokens?.toLocaleString?.()}</span>
                                 </div>
-                                <div className="mt-1 text-xs text-gray-600">
-                                    {agent.tokenUsage?.toLocaleString?.()} / {agent.maxTokens?.toLocaleString?.()}
-                                </div>
-                                <div className="flex gap-4 mt-2">
-                                    <div className="text-xs text-gray-500">Messages: {agent.messagesProcessed || 0}</div>
-                                    <div className="text-xs text-gray-500">Engagement: {(agent.engagement || 0).toFixed(2)}</div>
-                                    {agent.isPaid && <div className="text-xs text-gray-500">Conversion: {(agent.conversionRate || 0).toFixed(2)}%</div>}
+                                <div className="w-full h-2 rounded-full bg-[#ede8e3] relative overflow-hidden">
+                                    <div className="h-2 rounded-full bg-[#8d6e63] transition-all" style={{ width: `${(agent.tokenUsage / agent.maxTokens) * 100}%` }} />
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2 md:items-end">
                                 <div className="flex gap-2 items-center">
-    <button className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"><Settings className="h-4 w-4" /><span>Manage</span></button>
-    <button className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"><ExternalLink className="h-4 w-4" /><span>Live</span></button>
-    <button className="inline-flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800"
-      onClick={() => window.location.href = `/dashboard/agents/AgentDetailPage?id=${agent.createdAt}`}
-    >View Details</button>
-    <button className="inline-flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800"
-      onClick={() => window.location.href = `/create-agent?id=${agent.createdAt}`}
-    >Edit</button>
-    <label className="flex items-center cursor-pointer select-none ml-2">
-      <span className="mr-1 text-xs">{agent.status === 'active' ? 'Enabled' : 'Disabled'}</span>
-      <input
-        type="checkbox"
-        checked={agent.status === 'active'}
-        onChange={() => {
-          const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
-          setAgents(updated);
-          localStorage.setItem('agents', JSON.stringify(updated));
-        }}
-        className="form-checkbox h-4 w-4 text-green-600"
-      />
-    </label>
-    <button className="inline-flex items-center space-x-2 text-sm text-red-500 hover:text-red-700" onClick={() => handleBatch("delete")}><Trash2 className="h-4 w-4" /><span>Delete</span></button>
-</div>
+                                    <button
+                                        className="px-4 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold text-xs hover:bg-blue-100 border border-blue-100 shadow-sm transition-colors"
+                                        onClick={() => window.location.href = `/dashboard/agents/AgentDetailPage?id=${agent.createdAt}`}
+                                    >
+                                        View Details
+                                    </button>
+                                    <button
+                                        className="px-4 py-1 rounded-full bg-gray-50 text-gray-700 font-semibold text-xs hover:bg-gray-100 border border-gray-200 shadow-sm transition-colors"
+                                        onClick={() => window.location.href = `/create-agent?id=${agent.createdAt}`}
+                                    >
+                                        Edit
+                                    </button>
+                                    <label className="flex items-center cursor-pointer select-none ml-2">
+                                        <span className="mr-1 text-xs">{agent.status === 'active' ? 'Enabled' : 'Disabled'}</span>
+                                        <input
+                                            type="checkbox"
+                                            checked={agent.status === 'active'}
+                                            onChange={() => {
+                                                const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
+                                                setAgents(updated);
+                                                localStorage.setItem('agents', JSON.stringify(updated));
+                                            }}
+                                            className="form-checkbox h-4 w-4 text-green-600"
+                                        />
+                                    </label>
+                                    <button
+                                        className="px-4 py-1 rounded-full bg-red-50 text-red-600 font-semibold text-xs hover:bg-red-100 border border-red-100 shadow-sm transition-colors flex items-center gap-1"
+                                        onClick={() => handleBatch('delete')}
+                                    >
+                                        <Trash2 className="h-4 w-4" /> Delete
+                                    </button>
+                                </div>
                                 <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${agent.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>{agent.status}</span>
                             </div>
                         </div>

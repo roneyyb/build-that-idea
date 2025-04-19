@@ -21,20 +21,20 @@ export function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <div className="flex h-screen flex-col justify-between bg-pink-50 p-4 shadow-lg border border-pink-100">
+        <div className="flex h-screen flex-col justify-between bg-white p-4 min-w-[260px] border border-[#020817]">
             <div className="space-y-4">
-                <div className="flex items-center space-x-2 px-2 py-4">
-                    <h1 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-orange-500 text-2xl drop-shadow-lg tracking-wide" style={{ fontFamily: 'cursive, Comic Sans MS, sans-serif' }}>build that idea</h1>
+                <div className="flex justify-center py-4">
+                    <img src="https://buildthatidea.com/_next/static/media/logo.093f0b47.png" alt="Build That Idea Logo" className="h-10 w-auto" />
                 </div>
                 <div className="space-y-2">
                     <Link
                         href="/create-agent"
-                        className="flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-pink-500 to-orange-400 px-4 py-2 text-white font-semibold shadow-md hover:from-pink-600 hover:to-orange-500 transition-colors"
+                        className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-yellow-400 via-orange-500 to-orange-700 px-4 py-2 text-white font-bold text-base shadow-lg hover:from-yellow-500 hover:to-orange-800 transition-colors"
                     >
-                        + Create Agent
+                        <span className="text-lg font-bold">+</span> Create Agent
                     </Link>
                 </div>
-                <nav className="space-y-2">
+                <nav className="space-y-1 mt-4">
                     {sidebarItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;
@@ -44,8 +44,8 @@ export function Sidebar() {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    'flex items-center space-x-2 rounded-lg px-4 py-2 hover:bg-pink-100 transition-colors',
-                                    isActive && 'bg-pink-200 text-pink-700 font-bold shadow'
+                                    'flex items-center gap-3 rounded-lg px-4 py-2 text-base font-medium text-[#020817] hover:bg-[#F7F7F7] transition-colors',
+                                    isActive && 'bg-[#F7F7F7]'
                                 )}
                             >
                                 <Icon className="h-5 w-5" />
@@ -55,17 +55,17 @@ export function Sidebar() {
                     })}
                 </nav>
             </div>
-            <div className="border-t pt-4">
-                <div className="flex items-center space-x-3 px-4 py-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+            <div className="border-t border-[#020817] pt-4 mt-6">
+                <div className="flex items-center gap-3 px-4 py-2">
+                    <div className="h-9 w-9 rounded-full bg-[#F7F7F7] flex items-center justify-center font-bold text-[#020817] text-base border border-[#D1D5DB]">
                         JD
                     </div>
                     <div className="flex-1">
-                        <p className="text-sm font-medium">John Doe</p>
+                        <p className="text-sm font-semibold text-[#020817] leading-tight">John Doe</p>
                         <p className="text-xs text-gray-500">john@example.com</p>
                     </div>
                 </div>
-                <button className="mt-2 flex w-full items-center space-x-2 rounded-lg px-4 py-2 text-gray-600 hover:bg-gray-100">
+                <button className="mt-2 flex w-full items-center gap-2 rounded-lg px-4 py-2 text-gray-600 hover:bg-[#F7F7F7] font-medium transition-colors">
                     <LogOut className="h-5 w-5" />
                     <span>Logout</span>
                 </button>

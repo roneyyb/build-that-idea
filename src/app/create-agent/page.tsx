@@ -1,17 +1,17 @@
 "use client";
 "use client";
-import { AnimatePresence, motion } from "framer-motion";
-import { FormProvider, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { BasicInfoStep } from "@/components/create-agent/BasicInfoStep";
 import { AppearanceStep } from "@/components/create-agent/AppearanceStep";
-import { MonetizationStep } from "@/components/create-agent/MonetizationStep";
+import { BasicInfoStep } from "@/components/create-agent/BasicInfoStep";
 import { LivePreview } from "@/components/create-agent/LivePreview";
+import { MonetizationStep } from "@/components/create-agent/MonetizationStep";
 import { ProgressIndicator } from "@/components/create-agent/ProgressIndicator";
 import { CreateAgentProvider, useCreateAgentContext } from "@/components/create-agent/context";
 import { agentFormSchema, AgentFormSchema } from "@/components/create-agent/schema";
-import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 
 const steps = [
     { label: "Setup", component: BasicInfoStep },

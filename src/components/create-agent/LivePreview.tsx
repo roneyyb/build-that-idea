@@ -5,44 +5,44 @@ interface LivePreviewProps {
 
 export function LivePreview({ form }: LivePreviewProps) {
   return (
-    <div className="w-full max-w-lg bg-white rounded-xl shadow-lg p-8 flex flex-col items-center">
-      {/* Logo */}
-      <div className="mb-4 flex flex-col items-center">
-        {form.logo ? (
-          <img src={form.logo} alt="Agent Logo" className="h-16 w-16 rounded-full object-cover border mb-2" />
-        ) : (
-          <div className="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-2 text-3xl">
-            <span>▲</span>
-          </div>
-        )}
-        <div className="text-xl font-semibold text-center">{form.name || "Agent Name"}</div>
-        <div className="text-gray-500 text-center mt-1">
-          {form.description || "Describe your agent's purpose here."}
-        </div>
+    <div className="relative w-full h-[600px] max-w-2xl bg-gradient-to-br from-white via-[#f8fafc] to-[#e0e7ef] border border-gray-200 rounded-2xl flex flex-col justify-between items-center mx-auto p-0 overflow-hidden shadow-lg">
+      {/* Login button */}
+      <div className="absolute top-6 right-8 z-10">
+        <button className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full px-7 py-2 shadow transition-all">Login</button>
       </div>
-      {/* Quick Replies */}
-      {form.quickReplies && form.quickReplies.length > 0 && (
-        <div className="mb-4 w-full">
-          <div className="flex flex-wrap gap-2 justify-center">
-            {form.quickReplies.map((reply: string, idx: number) => (
-              <span key={idx} className="px-3 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">
-                {reply}
-              </span>
-            ))}
+      {/* Main content */}
+      <div className="flex-1 flex flex-col justify-center items-center px-4">
+        <div className="flex flex-col items-center justify-center mt-4">
+          <div className="mb-6 mt-10">
+            {form.logo ? (
+              <img src={form.logo} alt="Agent Logo" className="h-24 w-24 rounded-full object-cover border-4 border-[#020817] shadow-lg transition-transform hover:scale-105" />
+            ) : (
+              <div className="h-24 w-24 rounded-full bg-gradient-to-tr from-[#f1f5f9] to-[#dbeafe] flex items-center justify-center text-5xl shadow-lg border-4 border-[#020817]">
+                <span className="text-[#020817]">🤖</span>
+              </div>
+            )}
+          </div>
+          <div className="text-2xl font-extrabold text-center mb-1 text-[#020817] tracking-tight drop-shadow-sm">{form.name || "Your AI Agent"}</div>
+          <div className="text-gray-600 text-center text-base max-w-md mb-4 italic">
+            {form.description || "Create a unique, branded AI agent to engage users and automate conversations. See your agent's appearance and messaging here before going live."}
           </div>
         </div>
-      )}
-      {/* Chat Input */}
-      <div className="mt-8 w-full">
-        <input
-          className="w-full rounded border px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-orange-400"
-          placeholder={`Message ${form.name || "Agent"}`}
-          disabled
-        />
       </div>
-      {/* Footer */}
-      <div className="mt-6 text-xs text-gray-400 text-center">
-        Powered by <span className="font-semibold">Build that idea.</span> AI generated.
+      {/* Chat input at bottom */}
+      <div className="w-full px-6 pb-6 flex flex-col">
+        <div className="w-full flex items-center bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <input
+            className="flex-1 px-4 py-3 text-base focus:outline-none placeholder-gray-400 bg-transparent"
+            placeholder={`Message ${form.name || "AstroGPT"}`}
+            disabled
+          />
+          <button className="bg-orange-400 hover:bg-orange-500 text-white p-2 rounded-r-lg flex items-center justify-center transition-all">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </button>
+        </div>
+        <div className="text-xs text-gray-400 text-center mt-2">
+          Powered by <span className="font-bold">Build that idea.</span> AI generated.
+        </div>
       </div>
     </div>
   );
