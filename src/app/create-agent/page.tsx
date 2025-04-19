@@ -72,16 +72,34 @@ function WizardShell() {
                             >
                                 Previous
                             </button>
-                            <button
-                                className="px-4 py-2 rounded bg-orange-500 text-white hover:bg-orange-600"
-                                onClick={methods.handleSubmit((data) => {
-                                    dispatch({ type: "UPDATE_FORM", payload: data });
-                                    dispatch({ type: "NEXT_STEP" });
-                                })}
-                                disabled={state.step === steps.length - 1}
-                            >
-                                Next
-                            </button>
+                            {state.step < steps.length - 1 ? (
+                                <button
+                                    className="px-4 py-2 rounded bg-orange-500 text-white hover:bg-orange-600"
+                                    onClick={methods.handleSubmit((data) => {
+                                        dispatch({ type: "UPDATE_FORM", payload: data });
+                                        dispatch({ type: "NEXT_STEP" });
+                                    })}
+                                    disabled={state.step === steps.length - 1}
+                                >
+                                    Next
+                                </button>
+                            ) : (
+                                <button
+                                    className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                                    onClick={methods.handleSubmit((data) => {
+                                        // Save agent to localStorage array
+                                        const agents = JSON.parse(localStorage.getItem('agents') || '[]');
+                                        agents.push({ ...data, createdAt: new Date().toISOString(), status: 'active', type: data.theme || 'General', tokenUsage: 0, maxTokens: 10000000 });
+                                        localStorage.setItem('agents', JSON.stringify(agents));
+                                        // Optionally clear wizard state
+                                        dispatch({ type: "RESET" });
+                                        // Redirect to dashboard/agents
+                                        window.location.href = '/dashboard/agents';
+                                    })}
+                                >
+                                    Create Agent
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
