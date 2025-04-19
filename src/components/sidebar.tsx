@@ -21,15 +21,15 @@ export function Sidebar() {
     const pathname = usePathname();
 
     return (
-        <div className="flex h-screen flex-col justify-between bg-white p-4 shadow-lg">
+        <div className="flex h-screen flex-col justify-between bg-pink-50 p-4 shadow-lg border border-pink-100">
             <div className="space-y-4">
                 <div className="flex items-center space-x-2 px-2 py-4">
-                    <h1 className="text-xl font-bold">Build that Idea</h1>
+                    <h1 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-orange-500 text-2xl drop-shadow-lg tracking-wide" style={{ fontFamily: 'cursive, Comic Sans MS, sans-serif' }}>build that idea</h1>
                 </div>
                 <div className="space-y-2">
                     <Link
-                        href="/dashboard/agents/new"
-                        className="flex w-full items-center justify-center rounded-lg bg-orange-500 px-4 py-2 text-white hover:bg-orange-600"
+                        href="/create-agent"
+                        className="flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-pink-500 to-orange-400 px-4 py-2 text-white font-semibold shadow-md hover:from-pink-600 hover:to-orange-500 transition-colors"
                     >
                         + Create Agent
                     </Link>
@@ -44,8 +44,8 @@ export function Sidebar() {
                                 key={item.href}
                                 href={item.href}
                                 className={cn(
-                                    'flex items-center space-x-2 rounded-lg px-4 py-2 hover:bg-gray-100',
-                                    isActive && 'bg-gray-100'
+                                    'flex items-center space-x-2 rounded-lg px-4 py-2 hover:bg-pink-100 transition-colors',
+                                    isActive && 'bg-pink-200 text-pink-700 font-bold shadow'
                                 )}
                             >
                                 <Icon className="h-5 w-5" />

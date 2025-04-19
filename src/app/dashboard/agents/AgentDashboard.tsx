@@ -168,11 +168,30 @@ export default function AgentDashboard() {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2 md:items-end">
-                                <div className="flex gap-2">
-                                    <button className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"><Settings className="h-4 w-4" /><span>Manage</span></button>
-                                    <button className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"><ExternalLink className="h-4 w-4" /><span>Live</span></button>
-                                    <button className="inline-flex items-center space-x-2 text-sm text-red-500 hover:text-red-700" onClick={() => handleBatch("delete")}><Trash2 className="h-4 w-4" /><span>Delete</span></button>
-                                </div>
+                                <div className="flex gap-2 items-center">
+    <button className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"><Settings className="h-4 w-4" /><span>Manage</span></button>
+    <button className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900"><ExternalLink className="h-4 w-4" /><span>Live</span></button>
+    <button className="inline-flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800"
+      onClick={() => window.location.href = `/dashboard/agents/AgentDetailPage?id=${agent.createdAt}`}
+    >View Details</button>
+    <button className="inline-flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800"
+      onClick={() => window.location.href = `/create-agent?id=${agent.createdAt}`}
+    >Edit</button>
+    <label className="flex items-center cursor-pointer select-none ml-2">
+      <span className="mr-1 text-xs">{agent.status === 'active' ? 'Enabled' : 'Disabled'}</span>
+      <input
+        type="checkbox"
+        checked={agent.status === 'active'}
+        onChange={() => {
+          const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
+          setAgents(updated);
+          localStorage.setItem('agents', JSON.stringify(updated));
+        }}
+        className="form-checkbox h-4 w-4 text-green-600"
+      />
+    </label>
+    <button className="inline-flex items-center space-x-2 text-sm text-red-500 hover:text-red-700" onClick={() => handleBatch("delete")}><Trash2 className="h-4 w-4" /><span>Delete</span></button>
+</div>
                                 <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${agent.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>{agent.status}</span>
                             </div>
                         </div>

@@ -10,7 +10,7 @@ import { LivePreview } from "@/components/create-agent/LivePreview";
 import { ProgressIndicator } from "@/components/create-agent/ProgressIndicator";
 import { CreateAgentProvider, useCreateAgentContext } from "@/components/create-agent/context";
 import { agentFormSchema, AgentFormSchema } from "@/components/create-agent/schema";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const steps = [
@@ -21,13 +21,33 @@ const steps = [
 
 const LOCAL_STORAGE_KEY = "create_agent_wizard";
 
+import { useSearchParams } from "next/navigation";
+
 function WizardShell() {
     const { state, dispatch } = useCreateAgentContext();
+    const params = useSearchParams();
+    const agentId = params.get("id");
+    const [isLoaded, setIsLoaded] = useState(false);
     const methods = useForm<AgentFormSchema>({
         resolver: zodResolver(agentFormSchema),
         mode: "onChange",
         defaultValues: state.form,
     });
+
+    // Prefill if editing
+    useEffect(() => {
+        if (agentId && !isLoaded) {
+            const agents = JSON.parse(localStorage.getItem("agents") || "[]");
+            const agent = agents.find((a: any) => a.createdAt === agentId);
+            if (agent) {
+                methods.reset(agent);
+                dispatch({ type: "SET_FORM", payload: agent });
+            }
+            setIsLoaded(true);
+        } else if (!agentId && !isLoaded) {
+            setIsLoaded(true);
+        }
+    }, [agentId, isLoaded, methods, dispatch]);
 
     // Sync react-hook-form with context/reducer
     useEffect(() => {
@@ -41,12 +61,28 @@ function WizardShell() {
 
     const CurrentStep = steps[state.step].component;
 
+    const handleFinalSubmit = (data: AgentFormSchema) => {
+        let agents = JSON.parse(localStorage.getItem("agents") || "[]");
+        if (agentId) {
+            // Update existing agent
+            agents = agents.map((a: any) => a.createdAt === agentId ? { ...a, ...data } : a);
+        } else {
+            // Create new agent
+            agents.push({ ...data, createdAt: new Date().toISOString(), status: 'active', type: data.theme || 'General', tokenUsage: 0, maxTokens: 10000000 });
+        }
+        localStorage.setItem("agents", JSON.stringify(agents));
+        dispatch({ type: "RESET" });
+        window.location.href = '/dashboard/agents';
+    };
+
+    if (!isLoaded) return <div className="p-8">Loading...</div>;
+
     return (
         <FormProvider {...methods}>
             <div className="flex h-screen w-full bg-white">
                 {/* Left: Wizard */}
                 <div className="flex-1 max-w-xl p-8 border-r border-gray-200 flex flex-col">
-                    <h2 className="text-2xl font-bold mb-6 text-black">Create AI Agent</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-black">{agentId ? "Edit AI Agent" : "Create AI Agent"}</h2>
                     <ProgressIndicator step={state.step} steps={steps} />
                     <div className="flex-1 flex flex-col justify-between">
                         <AnimatePresence mode="wait">
@@ -86,18 +122,9 @@ function WizardShell() {
                             ) : (
                                 <button
                                     className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-                                    onClick={methods.handleSubmit((data) => {
-                                        // Save agent to localStorage array
-                                        const agents = JSON.parse(localStorage.getItem('agents') || '[]');
-                                        agents.push({ ...data, createdAt: new Date().toISOString(), status: 'active', type: data.theme || 'General', tokenUsage: 0, maxTokens: 10000000 });
-                                        localStorage.setItem('agents', JSON.stringify(agents));
-                                        // Optionally clear wizard state
-                                        dispatch({ type: "RESET" });
-                                        // Redirect to dashboard/agents
-                                        window.location.href = '/dashboard/agents';
-                                    })}
+                                    onClick={methods.handleSubmit(handleFinalSubmit)}
                                 >
-                                    Create Agent
+                                    {agentId ? "Save Changes" : "Create Agent"}
                                 </button>
                             )}
                         </div>
@@ -111,6 +138,7 @@ function WizardShell() {
         </FormProvider>
     );
 }
+
 
 export default function CreateAgentPage() {
     return (
