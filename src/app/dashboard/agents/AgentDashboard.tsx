@@ -169,7 +169,10 @@ export default function AgentDashboard() {
                                 initial={{ opacity: 0, y: 32 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 32 }}
-                                transition={{ duration: 0.5, delay: idx * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                                transition={{
+                                    y: { type: 'spring', stiffness: 80, damping: 18, delay: idx * 0.04 },
+                                    opacity: { duration: 0.4, delay: idx * 0.04 }
+                                }}
                                 className={`relative rounded-xl   bg-white p-5 flex flex-col gap-3 shadow-sm transition-all hover:shadow-md min-w-[320px] ${selected.has(id) ? 'ring-2 ring-orange-400' : ''}`}
                             >
                                 <div className="flex items-center gap-3">
