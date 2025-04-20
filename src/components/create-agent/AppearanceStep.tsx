@@ -1,9 +1,12 @@
 import { useFormContext } from "react-hook-form";
 import { ChangeEvent } from "react";
 
+import { useState } from "react";
+
 export function AppearanceStep() {
     const { register, setValue, watch } = useFormContext();
     const form = watch();
+    const [quickRepliesInput, setQuickRepliesInput] = useState(form.quickReplies?.join(", ") || "");
 
     function handleLogoChange(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -16,9 +19,11 @@ export function AppearanceStep() {
         }
     }
 
-    function handleQuickReplies(e: ChangeEvent<HTMLInputElement>) {
-        // Only split on commas, preserve spaces inside replies
-        const replies = e.target.value.split(',').map((r) => r.trim()).filter(Boolean);
+    function handleQuickRepliesInput(e: ChangeEvent<HTMLInputElement>) {
+        setQuickRepliesInput(e.target.value);
+    }
+    function handleQuickRepliesBlur() {
+        const replies = quickRepliesInput.split(',').map((r) => r.trim()).filter(Boolean);
         setValue("quickReplies", replies, { shouldDirty: true });
     }
 
@@ -41,8 +46,9 @@ export function AppearanceStep() {
                 <label className="block text-sm font-bold mb-1 text-[#020817]">Quick Replies</label>
                 <input
                     className="w-full rounded border-[1.5px] border-[#020817]/20 px-3 py-2 text-base text-[#020817] focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-[#020817]/50"
-                    value={form.quickReplies?.join(", ") || ""}
-                    onChange={handleQuickReplies}
+                    value={quickRepliesInput}
+                    onChange={handleQuickRepliesInput}
+                    onBlur={handleQuickRepliesBlur}
                     placeholder="e.g. Hello, How can I help you?, Thanks!"
                 />
                 <div className="flex flex-wrap gap-2 mt-2">

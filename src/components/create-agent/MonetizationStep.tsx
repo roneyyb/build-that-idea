@@ -1,8 +1,11 @@
 import { useFormContext } from "react-hook-form";
-import { Switch } from "../ui/switch";
+import { CustomCheckbox } from "../ui/CustomCheckbox";
+import "../ui/custom-checkbox.css";
+import { CustomRadio } from "../ui/CustomRadio";
+import "../ui/custom-radio.css";
 
 export function MonetizationStep() {
-    const { register, setValue, watch } = useFormContext();
+    const { setValue, watch } = useFormContext();
     const form = watch();
 
     // Default values for new fields
@@ -18,14 +21,12 @@ export function MonetizationStep() {
                 <div className="grid gap-2">
                     <label className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all duration-150 ${form.accessType === 'free' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}
                         htmlFor="accessType-free">
-                        <input
-                            type="radio"
+                        <CustomRadio
                             id="accessType-free"
-                            value="free"
-                            {...register('accessType')}
                             checked={form.accessType === 'free'}
                             onChange={() => setValue('accessType', 'free', { shouldDirty: true })}
-                            className="mt-1 accent-orange-500"
+                            name="accessType"
+                            value="free"
                         />
                         <div>
                             <div className="font-semibold text-[#020817]">Free Access</div>
@@ -34,14 +35,12 @@ export function MonetizationStep() {
                     </label>
                     <label className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all duration-150 ${form.accessType === 'paid' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}
                         htmlFor="accessType-paid">
-                        <input
-                            type="radio"
+                        <CustomRadio
                             id="accessType-paid"
-                            value="paid"
-                            {...register('accessType')}
                             checked={form.accessType === 'paid'}
                             onChange={() => setValue('accessType', 'paid', { shouldDirty: true })}
-                            className="mt-1 accent-orange-500"
+                            name="accessType"
+                            value="paid"
                         />
                         <div>
                             <div className="font-semibold text-[#020817]">Paid Subscription</div>
@@ -56,7 +55,7 @@ export function MonetizationStep() {
                     <div className="font-semibold text-[#020817]">Public Visibility</div>
                     <div className="text-gray-600 text-sm">Make your agent discoverable to everyone.</div>
                 </div>
-                <Switch
+                <CustomCheckbox
                     checked={!!form.public}
                     onChange={e => setValue('public', e.target.checked, { shouldDirty: true })}
                 />
