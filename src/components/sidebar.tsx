@@ -44,7 +44,7 @@ export function Sidebar() {
                     </div>
                     <button
                         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                        className="rounded  ml-10 transition-colors"
+                        className={cn("rounded  transition-colors", !collapsed && "ml-10")}
                         onClick={() => setCollapsed((c) => !c)}
                         style={{ zIndex: 10 }}
                     >

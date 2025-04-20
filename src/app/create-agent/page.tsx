@@ -45,6 +45,17 @@ function WizardShell() {
             }
             setIsLoaded(true);
         } else if (!agentId && !isLoaded) {
+            // Restore draft from localStorage if present
+            const draft = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (draft) {
+                try {
+                    const parsed = JSON.parse(draft);
+                    methods.reset(parsed);
+                    dispatch({ type: "SET_FORM", payload: parsed });
+                } catch (e) {
+                    // ignore parse error
+                }
+            }
             setIsLoaded(true);
         }
     }, [agentId, isLoaded, methods, dispatch]);
@@ -71,6 +82,7 @@ function WizardShell() {
             agents.push({ ...data, createdAt: new Date().toISOString(), status: 'active', type: data.theme || 'General', tokenUsage: 0, maxTokens: 10000000 });
         }
         localStorage.setItem("agents", JSON.stringify(agents));
+        localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear draft after submit
         dispatch({ type: "RESET" });
         window.location.href = '/dashboard/agents';
     };
