@@ -36,6 +36,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   if (idx === -1) {
     return NextResponse.json({ error: "Agent not found" }, { status: 404 });
   }
+  // Validate status field
+  if (
+    body.status !== undefined &&
+    body.status !== "active" &&
+    body.status !== "inactive"
+  ) {
+    return NextResponse.json({ error: "Invalid status value. Must be 'active' or 'inactive'." }, { status: 400 });
+  }
   agents[idx] = { ...agents[idx], ...body, id: params.id };
   fs.writeFileSync(AGENTS_FILE, JSON.stringify(agents, null, 2), "utf8");
   return NextResponse.json({ success: true, agent: agents[idx] });

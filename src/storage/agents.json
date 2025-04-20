@@ -11,7 +11,7 @@
     "accessType": "free",
     "public": false,
     "createdAt": "2025-04-20T07:08:24.901Z",
-    "status": "active",
+    "status": "inactive",
     "type": "default",
     "tokenUsage": 0,
     "maxTokens": 10000000,

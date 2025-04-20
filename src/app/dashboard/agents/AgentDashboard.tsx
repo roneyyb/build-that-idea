@@ -30,6 +30,7 @@ export default function AgentDashboard() {
     const [agents, setAgents] = useState<Agent[]>([]);
     const [loading, setLoading] = useState(false);
     const [toggleLoading, setToggleLoading] = useState<string | null>(null);
+    const [batchLoading, setBatchLoading] = useState(false);
     const [selected, setSelected] = useState<Set<string>>(new Set());
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState<SortField>("createdAt");
@@ -70,9 +71,13 @@ export default function AgentDashboard() {
 
     // Batch actions
     const handleBatch = async (action: "enable" | "disable" | "delete") => {
+        console.log('handleBatch called with action:', action);
+        setBatchLoading(true);
+
         if (action === "delete") {
             // Batch delete selected agents
             const toDelete = agents.filter((a) => selected.has(a.id));
+            console.log('Batch delete selected agent IDs:', Array.from(selected));
             await Promise.all(toDelete.map(async (agent) => {
                 await handleDeleteAgent(agent);
             }));
@@ -85,18 +90,36 @@ export default function AgentDashboard() {
                 }
                 return a;
             });
-            await Promise.all(
+            console.log('Batch update selected agent IDs:', Array.from(selected));
+            console.log('Batch update payloads:', updates.filter((a) => selected.has(a.id)));
+            const results = await Promise.all(
                 updates.filter((a) => selected.has(a.id)).map(async (agent) => {
-                    await fetch(`/api/agents/${agent.id}`, {
+                    const res = await fetch(`/api/agents/${agent.id}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(agent),
                     });
+                    const data = await res.json().catch(() => ({}));
+                    console.log('Batch update response:', { agent, status: res.status, data });
+                    if (!res.ok) {
+                        alert(`Failed to update agent ${agent.name || agent.id}: ${data.error || res.status}`);
+                        console.error('Batch update error:', agent, data);
+                    } else {
+                        console.log('Batch update success:', agent, data);
+                    }
+                    return res.ok;
                 })
             );
-            setAgents(updates);
+            if (results.some(ok => !ok)) {
+                alert('One or more agents failed to update. Check console for details.');
+            }
             setSelected(new Set());
         }
+        // Always refetch agents after batch op
+        const res = await fetch('/api/agents');
+        const fresh = await res.json();
+        setAgents(fresh);
+        setBatchLoading(false);
     };
 
 
@@ -212,18 +235,21 @@ export default function AgentDashboard() {
                             <button
                                 className="px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/10"
                                 onClick={() => handleBatch("enable")}
+                                disabled={batchLoading}
                             >
                                 Enable
                             </button>
                             <button
                                 className="px-4 py-2 rounded-lg bg-gray-500 text-white text-sm font-medium hover:bg-gray-600 transition-colors shadow-lg shadow-gray-500/10"
                                 onClick={() => handleBatch("disable")}
+                                disabled={batchLoading}
                             >
                                 Disable
                             </button>
                             <button
                                 className="px-4 py-2 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition-colors shadow-lg shadow-red-500/10"
                                 onClick={() => handleBatch("delete")}
+                                disabled={batchLoading}
                             >
                                 Delete
                             </button>
@@ -290,7 +316,7 @@ export default function AgentDashboard() {
                                     delay: idx * 0.05
                                 }}
                                 className={`group relative rounded-2xl bg-white p-6 transition-all
-                                    ${selected.has(id)
+                                    ${selected.has(agent.id)
                                         ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/5'
                                         : 'shadow-sm hover:shadow-md border border-gray-100'}`}
                             >
@@ -298,8 +324,8 @@ export default function AgentDashboard() {
                                     <div className="flex items-center h-5">
                                         <input
                                             type="checkbox"
-                                            checked={selected.has(id)}
-                                            onChange={() => toggleSelect(id)}
+                                            checked={selected.has(agent.id)}
+                                            onChange={() => toggleSelect(agent.id)}
                                             className="w-5 h-5 rounded border-gray-300 text-blue-500 focus:ring-blue-500/20 transition-colors"
                                         />
                                     </div>
