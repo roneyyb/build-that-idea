@@ -19,10 +19,9 @@ A comprehensive web application for creating and managing AI agents. Built with 
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 with App Router
+- **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
-- **Components**: shadcn/ui
 - **Forms**: React Hook Form with Zod validation
 - **Animations**: Framer Motion
 - **Charts**: Recharts
