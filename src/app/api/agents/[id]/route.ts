@@ -15,13 +15,40 @@ function readAgents() {
   }
 }
 
+type Agent = {
+  id: string;
+  [key: string]: any;
+};
+
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const agents = readAgents();
-  const agent = agents.find((a: any) => a.createdAt === params.id);
+  const agents: Agent[] = readAgents();
+  const agent = agents.find((a) => a.id === params.id);
   if (!agent) {
     return NextResponse.json({ error: "Agent not found" }, { status: 404 });
   }
   return NextResponse.json(agent);
 }
 
-// (Optional) Add POST/PUT here for saving/updating agents if needed.
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+  const body = await req.json();
+  const agents: Agent[] = readAgents();
+  const idx = agents.findIndex((a) => a.id === params.id);
+  if (idx === -1) {
+    return NextResponse.json({ error: "Agent not found" }, { status: 404 });
+  }
+  agents[idx] = { ...agents[idx], ...body, id: params.id };
+  fs.writeFileSync(AGENTS_FILE, JSON.stringify(agents, null, 2), "utf8");
+  return NextResponse.json({ success: true, agent: agents[idx] });
+}
+
+// DELETE: Remove agent by id
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const agents: Agent[] = readAgents();
+  const idx = agents.findIndex((a) => a.id === params.id);
+  if (idx === -1) {
+    return NextResponse.json({ error: "Agent not found" }, { status: 404 });
+  }
+  agents.splice(idx, 1);
+  fs.writeFileSync(AGENTS_FILE, JSON.stringify(agents, null, 2), "utf8");
+  return NextResponse.json({ success: true });
+}

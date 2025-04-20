@@ -1,40 +1,65 @@
 import { useFormContext } from "react-hook-form";
-
-import { Switch } from '@/components/ui/switch';
+import { Switch } from "../ui/switch";
 
 export function MonetizationStep() {
     const { register, setValue, watch } = useFormContext();
     const form = watch();
 
+    // Default values for new fields
+    if (!form.accessType) setValue('accessType', 'free', { shouldDirty: false });
+    if (form.public === undefined) setValue('public', false, { shouldDirty: false });
+
     return (
         <div className="space-y-6">
 
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-1 text-[#020817]">Pricing</label>
-                <input
-                    className="w-full rounded border-[1.5px] border-[#020817]/20 px-3 py-2 text-base text-[#020817] focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-[#020817]/50"
-                    {...register("pricing")}
-                    placeholder="e.g. $9.99/month"
-                />
+            {/* Access Type Selection */}
+            <div className="grid gap-4">
+                <label className="block text-sm font-bold mb-2 text-[#020817]">Access</label>
+                <div className="grid gap-2">
+                    <label className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all duration-150 ${form.accessType === 'free' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}
+                        htmlFor="accessType-free">
+                        <input
+                            type="radio"
+                            id="accessType-free"
+                            value="free"
+                            {...register('accessType')}
+                            checked={form.accessType === 'free'}
+                            onChange={() => setValue('accessType', 'free', { shouldDirty: true })}
+                            className="mt-1 accent-orange-500"
+                        />
+                        <div>
+                            <div className="font-semibold text-[#020817]">Free Access</div>
+                            <div className="text-gray-600 text-sm">Anyone can use your agent for free.</div>
+                        </div>
+                    </label>
+                    <label className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all duration-150 ${form.accessType === 'paid' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}
+                        htmlFor="accessType-paid">
+                        <input
+                            type="radio"
+                            id="accessType-paid"
+                            value="paid"
+                            {...register('accessType')}
+                            checked={form.accessType === 'paid'}
+                            onChange={() => setValue('accessType', 'paid', { shouldDirty: true })}
+                            className="mt-1 accent-orange-500"
+                        />
+                        <div>
+                            <div className="font-semibold text-[#020817]">Paid Subscription</div>
+                            <div className="text-gray-600 text-sm">Charge users a monthly fee to access your chatbot.</div>
+                        </div>
+                    </label>
+                </div>
             </div>
-            <div className="mb-4">
-                <label className="block text-sm font-bold mb-1 text-[#020817]">Model Selection</label>
-                <select
-                    className="w-full rounded border-[1.5px] border-[#020817]/20 px-3 py-2 text-base text-[#020817] focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder:text-[#020817]/50"
-                    {...register("model")}
-                >
-                    <option value="">Select a model</option>
-                    <option value="gpt-4">GPT-4</option>
-                    <option value="gpt-3.5">GPT-3.5</option>
-                    <option value="llama-2">Llama 2</option>
-                </select>
-            </div>
-            <div className="mb-4 flex items-center">
+            {/* Public Visibility Toggle */}
+            <div className="rounded-lg border border-gray-200 bg-white p-4 flex items-center justify-between">
+                <div>
+                    <div className="font-semibold text-[#020817]">Public Visibility</div>
+                    <div className="text-gray-600 text-sm">Make your agent discoverable to everyone.</div>
+                </div>
                 <Switch
-  checked={!!form.subscription}
-  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue("subscription", e.target.checked, { shouldDirty: true })}
-  label="Enable subscription features"
-/>
+                    checked={!!form.public}
+                    onChange={e => setValue('public', e.target.checked, { shouldDirty: true })}
+                />
             </div>
         </div>
     );

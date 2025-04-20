@@ -10,6 +10,7 @@ import { agentFormSchema, AgentFormSchema } from "@/components/create-agent/sche
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -34,16 +35,23 @@ function WizardShell() {
         defaultValues: state.form,
     });
 
+    const [loading, setLoading] = useState(false);
     // Prefill if editing
     useEffect(() => {
         if (agentId && !isLoaded) {
-            const agents = JSON.parse(localStorage.getItem("agents") || "[]");
-            const agent = agents.find((a: any) => a.createdAt === agentId);
-            if (agent) {
-                methods.reset(agent);
-                dispatch({ type: "SET_FORM", payload: agent });
-            }
-            setIsLoaded(true);
+            fetch(`/api/agents/${agentId}`)
+                .then(res => res.ok ? res.json() : null)
+                .then(agent => {
+                    if (agent && 'createdAt' in agent) {
+                        // Ensure 'public' is set for old data
+                        if (typeof agent.public === 'undefined') {
+                            agent.public = false;
+                        }
+                        methods.reset(agent);
+                        dispatch({ type: "SET_FORM", payload: agent });
+                    }
+                    setIsLoaded(true);
+                });
         } else if (!agentId && !isLoaded) {
             // Restore draft from localStorage if present
             const draft = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -52,7 +60,8 @@ function WizardShell() {
                     const parsed = JSON.parse(draft);
                     methods.reset(parsed);
                     dispatch({ type: "SET_FORM", payload: parsed });
-                } catch (e) {
+                } catch {
+
                     // ignore parse error
                 }
             }
@@ -63,7 +72,7 @@ function WizardShell() {
     // Sync react-hook-form with context/reducer
     useEffect(() => {
         methods.reset(state.form);
-    }, [state.form]);
+    }, [state.form, methods]);
 
     // Auto-save to localStorage
     useEffect(() => {
@@ -72,22 +81,50 @@ function WizardShell() {
 
     const CurrentStep = steps[state.step].component;
 
-    const handleFinalSubmit = (data: AgentFormSchema) => {
-        let agents = JSON.parse(localStorage.getItem("agents") || "[]");
-        if (agentId) {
-            // Update existing agent
-            agents = agents.map((a: any) => a.createdAt === agentId ? { ...a, ...data } : a);
-        } else {
-            // Create new agent
-            agents.push({ ...data, createdAt: new Date().toISOString(), status: 'active', type: data.theme || 'General', tokenUsage: 0, maxTokens: 10000000 });
-        }
-        localStorage.setItem("agents", JSON.stringify(agents));
+    const handleSubmit = async (data: AgentFormSchema) => {
+        setLoading(true);
+
+        const { createdAt, ...rest } = data;
+        const agentToSave = {
+            ...rest,
+            createdAt: createdAt || new Date().toISOString(),
+            status: typeof rest.status === 'string' ? rest.status : 'active',
+            type: data.theme || 'General',
+            tokenUsage: 0,
+            maxTokens: 10000000
+        };
+        const url = agentId
+            ? `/api/agents/${agentId}`
+            : '/api/agents';
+        await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(agentToSave),
+        });
         localStorage.removeItem(LOCAL_STORAGE_KEY); // Clear draft after submit
-        dispatch({ type: "RESET" });
+        dispatch({ type: 'RESET' });
+        setLoading(false);
         window.location.href = '/dashboard/agents';
     };
 
-    if (!isLoaded) return <div className="p-8">Loading...</div>;
+    if (!isLoaded) return (
+        <div className="flex h-screen w-full bg-white">
+            <div className="flex-1 max-w-xl p-8 border-r border-gray-200 flex flex-col">
+                <div className="space-y-6">
+                    <Skeleton className="h-8 w-2/3 mb-6" />
+                    <Skeleton className="h-4 w-1/3 mb-4" />
+                    <div className="space-y-4">
+                        <Skeleton className="h-12 w-full rounded-lg" />
+                        <Skeleton className="h-12 w-full rounded-lg" />
+                        <Skeleton className="h-12 w-full rounded-lg" />
+                    </div>
+                </div>
+            </div>
+            <div className="flex-1 flex items-center justify-center bg-gray-50">
+                <Skeleton className="h-96 w-80 rounded-xl" />
+            </div>
+        </div>
+    );
 
     return (
         <FormProvider {...methods}>
@@ -134,7 +171,7 @@ function WizardShell() {
                             ) : (
                                 <button
                                     className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-                                    onClick={methods.handleSubmit(handleFinalSubmit)}
+                                    onClick={methods.handleSubmit(handleSubmit)}
                                 >
                                     {agentId ? "Save Changes" : "Create Agent"}
                                 </button>

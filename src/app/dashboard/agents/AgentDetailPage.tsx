@@ -1,12 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 import { Edit, Copy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRouter, useSearchParams } from "next/navigation";
 
 interface Agent {
     name: string;
@@ -41,36 +40,41 @@ const sampleUsageData = [
 
 export default function AgentDetailPage() {
     const searchParams = useSearchParams();
-    const navigate = useRouter()
+    const router = useRouter();
     const agentId = searchParams.get("id");
     const [agent, setAgent] = useState<Agent | null>(null);
-    const [enabled, setEnabled] = useState(true);
+    const [enabled, setEnabled] = useState(false);
 
     useEffect(() => {
         if (agentId) {
-            const agents = JSON.parse(localStorage.getItem("agents") || "[]");
-            const found = agents.find((a: Agent) => a.createdAt === agentId);
-            if (found) {
-                setAgent(found);
-                setEnabled(found.status === "active");
-            }
+            fetch(`/api/agents/${agentId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Agent not found");
+                    return res.json();
+                })
+                .then(agent => {
+                    setAgent(agent);
+                    setEnabled(agent.status === "active");
+                })
+                .catch(() => setAgent(null));
         }
     }, [agentId]);
 
-    const handleToggle = () => {
+    const handleToggle = async () => {
         if (!agent) return;
-        const agents = JSON.parse(localStorage.getItem("agents") || "[]");
-        const updated = agents.map((a: Agent) =>
-            a.createdAt === agent.createdAt ? { ...a, status: enabled ? "inactive" : "active" } : a
-        );
-        localStorage.setItem("agents", JSON.stringify(updated));
-        setEnabled((prev) => !prev);
-        setAgent((prev) => prev && { ...prev, status: enabled ? "inactive" : "active" });
+        const newStatus = enabled ? "inactive" : "active";
+        await fetch(`/api/agents/${agentId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...agent, status: newStatus }),
+        });
+        setEnabled(newStatus === "active");
+        setAgent(prev => prev && { ...prev, status: newStatus });
     };
 
     const handleEdit = () => {
         if (agent) {
-            navigate.push(`/create-agent?id=${agent.createdAt}`);
+            router.push(`/create-agent?id=${agent.id}`);
         }
     };
 
@@ -157,7 +161,7 @@ export default function AgentDetailPage() {
                             <div className="flex items-center gap-3 bg-gray-100 rounded-full px-4 py-2">
                                 <Switch
                                     checked={enabled}
-                                    onChange={() => handleToggle(!enabled)}
+                                    onChange={handleToggle}
                                     className="data-[state=on]:bg-green-500"
                                 />
                                 <span className="text-gray-800 text-sm font-medium">
@@ -210,7 +214,7 @@ export default function AgentDetailPage() {
                         <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate.push('/dashboard/agents')}
+                            onClick={() => router.push("/dashboard/agents")}
                             className="border-gray-200 hover:bg-gray-50"
                         >
                             Go to Dashboard
@@ -274,11 +278,11 @@ export default function AgentDetailPage() {
                                     <input
                                         className="flex-1 px-4 py-2 rounded-lg border border-gray-100 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200"
                                         readOnly
-                                        value={`${window.location.origin}/agent?id=${agent.createdAt}`}
+                                        value={`${window.location.origin}/agent?id=${agent.id}`}
                                     />
                                     <Button
                                         variant="outline"
-                                        onClick={() => navigator.clipboard.writeText(`${window.location.origin}/agent?id=${agent.createdAt}`)}
+                                        onClick={() => navigator.clipboard.writeText(`${window.location.origin}/agent?id=${agent.id}`)}
                                         className="border-gray-200 hover:bg-gray-50"
                                     >
                                         <Copy className="w-4 h-4" />
@@ -291,11 +295,11 @@ export default function AgentDetailPage() {
                                     <input
                                         className="flex-1 px-4 py-2 rounded-lg border border-gray-100 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200"
                                         readOnly
-                                        value={`<iframe src="${window.location.origin}/agent?id=${agent.createdAt}" width="400" height="600"></iframe>`}
+                                        value={`<iframe src="${window.location.origin}/agent?id=${agent.id}" width="400" height="600"></iframe>`}
                                     />
                                     <Button
                                         variant="outline"
-                                        onClick={() => navigator.clipboard.writeText(`<iframe src="${window.location.origin}/agent?id=${agent.createdAt}" width="400" height="600"></iframe>`)}
+                                        onClick={() => navigator.clipboard.writeText(`<iframe src="${window.location.origin}/agent?id=${agent.id}" width="400" height="600"></iframe>`)}
                                         className="border-gray-200 hover:bg-gray-50"
                                     >
                                         <Copy className="w-4 h-4" />

@@ -22,11 +22,22 @@ export default function EditAgentPage() {
   const params = useSearchParams();
   const agentId = params.get("id");
   const [initialData, setInitialData] = useState<AgentFormSchema | null>(null);
+  const [loading, setLoading] = useState(false); // Used for loading state during fetches and deletes
 
   useEffect(() => {
-    const agents = JSON.parse(localStorage.getItem("agents") || "[]");
-    const agent = agents.find((a: any) => a.createdAt === agentId);
-    if (agent) setInitialData(agent);
+    if (agentId) {
+      setLoading(true);
+      fetch(`/api/agents/${agentId}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Agent not found");
+          return res.json();
+        })
+        .then(agent => {
+          setInitialData(agent);
+        })
+        .catch(() => setInitialData(null))
+        .finally(() => setLoading(false));
+    }
   }, [agentId]);
 
   const methods = useForm<AgentFormSchema>({
@@ -40,19 +51,24 @@ export default function EditAgentPage() {
   }, [initialData]);
 
   // Save changes
-  const onSubmit = (data: AgentFormSchema) => {
-    const agents = JSON.parse(localStorage.getItem("agents") || "[]");
-    const idx = agents.findIndex((a: any) => a.createdAt === agentId);
-    if (idx !== -1) {
-      agents[idx] = { ...agents[idx], ...data };
-      localStorage.setItem("agents", JSON.stringify(agents));
+  const onSubmit = async (data: AgentFormSchema) => {
+    if (agentId) {
+      setLoading(true);
+      // Remove createdAt if present, always include id
+      const { createdAt, ...rest } = data;
+      await fetch(`/api/agents/${agentId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...rest, id: agentId }),
+      });
+      setLoading(false);
     }
     router.push("/dashboard/agents");
   };
 
   if (!initialData) return <div className="p-8">Loading...</div>;
 
-  const CurrentStep = steps[0].component; // For simplicity, show all steps stacked, or you can implement wizard navigation
+  // For simplicity, show all steps stacked, or you can implement wizard navigation
 
   return (
     <CreateAgentProvider>
@@ -65,8 +81,27 @@ export default function EditAgentPage() {
               <BasicInfoStep />
               <AppearanceStep />
               <MonetizationStep />
-              <div className="flex justify-end mt-8">
-                <button type="submit" className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700">Save Changes</button>
+              <div className="flex justify-between mt-8">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                  onClick={async () => {
+                    if (!agentId) return;
+                    setLoading(true);
+                    await fetch(`/api/agents/${agentId}`, { method: "DELETE" });
+                    setLoading(false);
+                    router.push("/dashboard/agents");
+                  }}
+                >
+                  Delete
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                  onClick={methods.handleSubmit(onSubmit)}
+                >
+                  {agentId ? "Save Changes" : "Create Agent"}
+                </button>
               </div>
             </form>
           </div>

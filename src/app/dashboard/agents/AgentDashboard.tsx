@@ -1,13 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Settings, ExternalLink, Trash2, CheckCircle2, XCircle, Search, Filter } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCircle2, Filter, Search, Trash2, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface Agent {
+    id: string;
     name: string;
     description?: string;
     type: string;
@@ -30,6 +28,8 @@ type Filter = {
 
 export default function AgentDashboard() {
     const [agents, setAgents] = useState<Agent[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [toggleLoading, setToggleLoading] = useState<string | null>(null);
     const [selected, setSelected] = useState<Set<string>>(new Set());
     const [search, setSearch] = useState("");
     const [sortField, setSortField] = useState<SortField>("createdAt");
@@ -37,55 +37,15 @@ export default function AgentDashboard() {
     const [filter, setFilter] = useState<Filter>({});
 
     useEffect(() => {
-        const saved = localStorage.getItem("agents");
-        if (saved) {
-            setAgents(JSON.parse(saved));
-        } else {
-            // Sample data for demo purposes
-            const sampleAgents: Agent[] = [
-                {
-                    name: "Customer Support Agent",
-                    description: "Handles customer inquiries and support tickets",
-                    type: "Support",
-                    tokenUsage: 125000,
-                    maxTokens: 500000,
-                    status: "active",
-                    createdAt: new Date().toISOString(),
-                    isPaid: true,
-                    messagesProcessed: 1245,
-                    engagement: 0.78,
-                    conversionRate: 0.23
-                },
-                {
-                    name: "Sales Assistant",
-                    description: "Helps customers find products and complete purchases",
-                    type: "Sales",
-                    tokenUsage: 85000,
-                    maxTokens: 200000,
-                    status: "active",
-                    createdAt: new Date(Date.now() - 86400000).toISOString(),
-                    isPaid: true,
-                    messagesProcessed: 867,
-                    engagement: 0.65,
-                    conversionRate: 0.31
-                },
-                {
-                    name: "Content Creator",
-                    description: "Generates blog posts and marketing content",
-                    type: "Marketing",
-                    tokenUsage: 150000,
-                    maxTokens: 200000,
-                    status: "inactive",
-                    createdAt: new Date(Date.now() - 172800000).toISOString(),
-                    isPaid: false,
-                    messagesProcessed: 240,
-                    engagement: 0.45,
-                    conversionRate: 0.12
-                }
-            ];
-            setAgents(sampleAgents);
-            localStorage.setItem("agents", JSON.stringify(sampleAgents));
-        }
+        setLoading(true);
+        fetch('/api/agents')
+            .then(res => res.json())
+            .then(data => {
+                setAgents(data);
+                setLoading(false);
+            });
+
+
     }, []);
 
     // Search, filter, sort pipeline
@@ -109,20 +69,48 @@ export default function AgentDashboard() {
         });
 
     // Batch actions
-    const handleBatch = (action: "enable" | "disable" | "delete") => {
-        let updated = [...agents];
+    const handleBatch = async (action: "enable" | "disable" | "delete") => {
         if (action === "delete") {
-            updated = updated.filter((a) => !selected.has(a.name + a.createdAt));
+            // Batch delete selected agents
+            const toDelete = agents.filter((a) => selected.has(a.id));
+            await Promise.all(toDelete.map(async (agent) => {
+                await handleDeleteAgent(agent);
+            }));
+            setSelected(new Set());
         } else {
-            updated = updated.map((a) =>
-                selected.has(a.name + a.createdAt)
-                    ? { ...a, status: action === "enable" ? "active" : "inactive" }
-                    : a
+            // Batch enable/disable selected agents
+            const updates = agents.map((a) => {
+                if (selected.has(a.id)) {
+                    return { ...a, status: (action === "enable" ? "active" : "inactive") as "active" | "inactive" };
+                }
+                return a;
+            });
+            await Promise.all(
+                updates.filter((a) => selected.has(a.id)).map(async (agent) => {
+                    await fetch(`/api/agents/${agent.id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(agent),
+                    });
+                })
             );
+            setAgents(updates);
+            setSelected(new Set());
         }
-        setAgents(updated);
-        localStorage.setItem("agents", JSON.stringify(updated));
-        setSelected(new Set());
+    };
+
+
+    // Delete a single agent
+    const handleDeleteAgent = async (agent: Agent) => {
+        try {
+            await fetch(`/api/agents/${agent.id}`, {
+                method: 'DELETE',
+            });
+            setAgents((prev) => prev.filter((a) => a.id !== agent.id));
+        } catch (err) {
+            console.error('Failed to delete agent:', err);
+            alert('Failed to delete agent.');
+        }
     };
 
     // Select/deselect logic
@@ -288,10 +276,10 @@ export default function AgentDashboard() {
             <div className="space-y-4">
                 <AnimatePresence>
                     {filtered.map((agent, idx) => {
-                        const id = agent.name + agent.createdAt;
+                        const id = agent.name + agent.id;
                         return (
                             <motion.div
-                                key={id}
+                                key={agent.id}
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 20 }}
@@ -333,31 +321,43 @@ export default function AgentDashboard() {
                                     <div className="flex items-center gap-3">
                                         <button
                                             className="px-4 py-2 rounded-lg bg-white text-gray-700 font-medium text-sm hover:bg-gray-50 border border-gray-200 transition-colors"
-                                            onClick={() => window.location.href = `/dashboard/agents/AgentDetailPage?id=${agent.createdAt}`}
+                                            onClick={() => window.location.href = `/dashboard/agents/AgentDetailPage?id=${agent.id}`}
                                         >
                                             View Details
                                         </button>
                                         <button
                                             className="px-4 py-2 rounded-lg bg-white text-gray-700 font-medium text-sm hover:bg-gray-50 border border-gray-200 transition-colors"
-                                            onClick={() => window.location.href = `/create-agent?id=${agent.createdAt}`}
+                                            onClick={() => window.location.href = `/create-agent?id=${agent.id}`}
                                         >
                                             Edit
                                         </button>
                                         <div className="flex items-center gap-1 ml-2">
                                             <span className={`text-xs font-semibold ${agent.status === 'active' ? 'text-emerald-600' : 'text-gray-400'}`}>{agent.status === 'active' ? 'Active' : 'Inactive'}</span>
                                             <Switch
-  checked={agent.status === 'active'}
-  onChange={() => {
-    const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
-    setAgents(updated);
-    localStorage.setItem('agents', JSON.stringify(updated));
-  }}
-  className="ml-2"
-/>
+                                                checked={agent.status === 'active'}
+                                                disabled={toggleLoading === agent.id}
+                                                onChange={async () => {
+                                                    setToggleLoading(agent.id);
+                                                    const newStatus = agent.status === 'active' ? 'inactive' : 'active';
+                                                    const updatedAgent = { ...agent, status: newStatus };
+                                                    await fetch(`/api/agents/${agent.id}`, {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify(updatedAgent),
+                                                    });
+                                                    setAgents(agents.map(a => a.id === agent.id ? { ...updatedAgent, status: newStatus as 'active' | 'inactive' } : a));
+                                                    setToggleLoading(null);
+                                                }}
+                                                className="ml-2"
+                                            />
                                         </div>
                                         <button
                                             className="p-2 rounded-lg text-gray-400 hover:text-red-500 transition-colors"
-                                            onClick={() => handleBatch('delete')}
+                                            onClick={async () => {
+                                                if (window.confirm(`Are you sure you want to delete agent '${agent.name}'? This action cannot be undone.`)) {
+                                                    await handleDeleteAgent(agent);
+                                                }
+                                            }}
                                         >
                                             <Trash2 className="w-5 h-5" />
                                         </button>

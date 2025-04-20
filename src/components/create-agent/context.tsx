@@ -10,6 +10,14 @@ export interface AgentFormState {
   pricing: string;
   model: string;
   subscription: boolean;
+  public: boolean;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  type: string;
+  tokenUsage: number;
+  maxTokens: number;
+  id: string;
+  accessType: 'free' | 'paid';
 }
 
 export interface WizardState {
@@ -22,7 +30,8 @@ export type WizardAction =
   | { type: 'PREV_STEP' }
   | { type: 'GOTO_STEP'; payload: number }
   | { type: 'UPDATE_FORM'; payload: Partial<AgentFormState> }
-  | { type: 'SET_FORM'; payload: AgentFormState };
+  | { type: 'SET_FORM'; payload: AgentFormState }
+  | { type: 'RESET' };
 
 const initialForm: AgentFormState = {
   name: '',
@@ -34,6 +43,14 @@ const initialForm: AgentFormState = {
   pricing: '',
   model: '',
   subscription: false,
+  public: false,
+  status: 'active',
+  createdAt: '',
+  type: 'default',
+  tokenUsage: 0,
+  maxTokens: 10000000,
+  id: '',
+  accessType: 'free',
 };
 
 const initialState: WizardState = {
@@ -53,6 +70,8 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
       return { ...state, form: { ...state.form, ...action.payload } };
     case 'SET_FORM':
       return { ...state, form: action.payload };
+    case 'RESET':
+      return { ...initialState };
     default:
       return state;
   }
