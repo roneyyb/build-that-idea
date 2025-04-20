@@ -36,8 +36,8 @@
     "tokenUsage": 0,
     "maxTokens": 10000000,
     "id": "7764488f-3bfd-46ac-9cf5-564db644b58b",
-    "public": false,
-    "accessType": "free"
+    "public": true,
+    "accessType": "paid"
   },
   {
     "name": "Token",

@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import { CustomCheckbox } from "../ui/CustomCheckbox";
 import "../ui/custom-checkbox.css";
-import { CustomRadio } from "../ui/CustomRadio";
+
 import "../ui/custom-radio.css";
 
 export function MonetizationStep() {
@@ -21,12 +21,11 @@ export function MonetizationStep() {
                 <div className="grid gap-2">
                     <label className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all duration-150 ${form.accessType === 'free' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}
                         htmlFor="accessType-free">
-                        <CustomRadio
+                        <CustomCheckbox
                             id="accessType-free"
                             checked={form.accessType === 'free'}
                             onChange={() => setValue('accessType', 'free', { shouldDirty: true })}
                             name="accessType"
-                            value="free"
                         />
                         <div>
                             <div className="font-semibold text-[#020817]">Free Access</div>
@@ -35,12 +34,11 @@ export function MonetizationStep() {
                     </label>
                     <label className={`flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all duration-150 ${form.accessType === 'paid' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 bg-white'}`}
                         htmlFor="accessType-paid">
-                        <CustomRadio
+                        <CustomCheckbox
                             id="accessType-paid"
                             checked={form.accessType === 'paid'}
                             onChange={() => setValue('accessType', 'paid', { shouldDirty: true })}
                             name="accessType"
-                            value="paid"
                         />
                         <div>
                             <div className="font-semibold text-[#020817]">Paid Subscription</div>
