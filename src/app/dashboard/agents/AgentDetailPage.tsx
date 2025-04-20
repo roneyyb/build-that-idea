@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
@@ -8,6 +9,7 @@ import { Edit, Copy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface Agent {
+    id: string;
     name: string;
     description: string;
     model: string;
@@ -44,6 +46,12 @@ export default function AgentDetailPage() {
     const agentId = searchParams.get("id");
     const [agent, setAgent] = useState<Agent | null>(null);
     const [enabled, setEnabled] = useState(false);
+
+    // Back button handler
+    const handleBack = () => {
+        router.back(); // Or router.push('/dashboard/agents') for explicit route
+    };
+
 
     useEffect(() => {
         if (agentId) {
@@ -82,6 +90,14 @@ export default function AgentDetailPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
                 <div className="w-full max-w-4xl p-8 space-y-8">
+                    <button
+                        onClick={handleBack}
+                        className="flex items-center gap-2 text-gray-600 hover:text-orange-500 text-base font-medium mb-2"
+                        aria-label="Back to agents"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                        Back
+                    </button>
                     <h1 className="text-3xl font-bold text-gray-900 mb-6">Agent Details</h1>
                     <div className="relative overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl shadow p-8">
                         <div className="flex items-center gap-6">

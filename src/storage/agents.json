@@ -8,36 +8,15 @@
       "hello"
     ],
     "theme": "default",
-    "accessType": "free",
+    "accessType": "paid",
     "public": false,
     "createdAt": "2025-04-20T07:08:24.901Z",
-    "status": "inactive",
+    "status": "active",
     "type": "default",
     "tokenUsage": 0,
     "maxTokens": 10000000,
     "id": "61877612-748c-4fb6-a2e5-3dc410bcc896",
     "model": "llama-2"
-  },
-  {
-    "name": "Blogger",
-    "description": "htrreee hhhh",
-    "instructions": "you are a travewk",
-    "logo": "",
-    "quickReplies": [
-      "hkjljkhjk"
-    ],
-    "theme": "default",
-    "pricing": "",
-    "model": "gpt-4",
-    "subscription": false,
-    "createdAt": "2025-04-20T07:06:22.988Z",
-    "status": "inactive",
-    "type": "default",
-    "tokenUsage": 0,
-    "maxTokens": 10000000,
-    "id": "7764488f-3bfd-46ac-9cf5-564db644b58b",
-    "public": true,
-    "accessType": "paid"
   },
   {
     "name": "Token",
@@ -59,5 +38,27 @@
     "id": "219b3061-1f1b-4313-9f54-b4f5a3002230",
     "accessType": "paid",
     "createdAt": "2025-04-20T07:56:22.059Z"
+  },
+  {
+    "name": "Rajat Bothra",
+    "description": "Create website with helo of ai",
+    "instructions": "Create website",
+    "logo": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAA6hSURBVHgB7ZwLVBTXGce/mV0fYIgbAWOMwNLEWE0iYBNfSXSpNT6isojRGE1grSZpjxFITk8bbQ5r2yQ1PRY49rTNwywm7UmTaBDz8EFydn1Vk1N5mJ48RLKLoFhFWRUBZXduv++uo8OyCyzsLCj5y3UeO3N37m+/73733pm5AvSgShOZzq0BgwQQh5uJAEzPGOjpM0EAWvdIwD8GTvzfgeu4BIebSVVaUbRpXVCWVCY4oYckQAhFwC5r3AYGzAAgphAk2s+QlCB0fCnEU2i1xPPwH57uEAFsuF3U362xhRJoSAAemNhiECUhEwtqwE2dzOp8Sz1UNB2GisZyOHKxHBrcTjjSVM4/q73kaJVHhEYHwwbE8eXIsAQYPlAPI8MTcH0sRGh1vCgyVFwvwO8omvCldiuoLNUAlhqYrrnRhdBYligKOo+VAZSc3wO7zxYhtMNQcmE3BEMEclzEFJg6JAXG3TzFs5PxP4coimYJNLsnHUT3V0FBB2hFcAObCZyUhcDINODkpWPwyem34b2TG+CCS13vug2tNAlhLh/xItw2MI7cm344dHGxYMLBfmshyAoqwH0TmzI0gpCD16yn37/03F54s+YPUIpW1xOaMmQeLBq2EsYNngJX4pFDQIuctL//JgiSggLwwMQmvaQBC2ZmoO0S5x7YWP1Sj4HzFgFcc8dr3CI9RRa2ChLLnnQwzAHdVLcB7n+wkdzVLAiirgHdc+Oxl+H9E3+B3qjZQ5fCstg1CDKWNp1YP2ZN2hPWLWvsMkCroV43QOqXg3VMFrnH3rqP4eWKp7GOOwe9WWSFy2JXw+xbl3jalyDmTd4Tng1dVJcAIjx9f9avEC0vscF1Ht6qQqs7/le4nrTw9l/CsrjVcJN2MFEoa7nkSk0+eIsDAlTAAAmeFkQrtrr0tU1V8Gz5I3Cy+RhcjxqGrrwh4RO+RBIOF0jJybbAIIqBHMzhCaIVG6v6ioby6xoeia6dykBtUiqTVhCsVMZA8ui0BVLGGhGsuKo/euErWFU6Fxp6eX3XWZEb5yd9BCMj7qVNh1uCTltipyzQOrNeL2qYFXv0+oqLh28oeCQqSyaWqeLiV8AEiZeVytyZczsFUHS7C0GUOLzMQ/NuKHiyOMRDc+Hoxf8ClVXAMlNLo6PzOgRoe/h0LhNYYi3WF2vKn7gh4cmisq0pXwq1vF6XEoUBrpyOzmm3DrTOPJWB43CWCy3nYMWBn8LJpmroCxoWFgNvTrbCIG0ESMCyp+0clufvWL8WaJ1Zq8c6D61Pgk2Vf+oz8EhU1oLKVzkdHEnK4Sz8yL8La8VcBpJux4l/weaq16GvabPjddh3ajsFFR36qcXfcT4Bfj67NkOSXEZqJ22qWA99VesOr+L1IhOZwfpIbbqvY3wCFDQsB0TG4QXLdfV6PdTX14PdbgedrsPgFrAoT6vVyvNPTEyEYKih5TxsOrqerBAkUTJbDfY2F94G4OdzqnE8z60/2VwNO2veh2DJaDTyQhLInJwOg1vAojwNBgPPn5bB0pbv34DyswfQqiS962ZtVrsHW412/Wcpx+yYWELkJBpkCVpCeAytg8lKT09v93gEwo8vLS1lubm57R6bkZFxNV86ByEG9doTIicyYvK5sboeGfl3n11Ge0axsYqtf/C9oF6AnNAyrhYU3c3vcQTMW+1BpLxkofuqcu3EpNjoYDuNdrNfgJ+l2u3F8x3sgeEPq3IRlMxmM7cqdGmfn5P1yMI6s5XV+rMsskDKMysrS7XrToiayHal2hnyqfcNL+2ocVfa9+ydmXtVu4jOpIKCglZurnRPi8XSo9dGbIhR8YIKQxuAOxccLdi5oJJNj0vrsQtUWh9Znry/M1YYivTEmEy2CxntWlhZKHPjUZhXjCKkU9Pl8OkvoKeE7u1zfe3aa3cj1YjgnVVhhQWbNMiSMUOhsfRaMNm58Khxx6IK9mryP3qd9UEvs0JitGPhEVa8qCKF2HELlMQWIzUWDxwvhp4Qtd38WZ8sbytUozHeGf37RDH1TKAF3Mm0zUdjti/+1o4L/crtqVDp/AbUEvUQ5DR48GC+JHhKGA6HA+Lj432eT70MOl6W0+nkx1MqLy+/um6z2UAtjR06HtZN43dCHbPeHR0PhRmluu1LvmabH/1SVfdUumB7aq+BrYzI7UmNxrQyfbDgC/bp418zYqfVurSJVDFWOr8GtUQuqbQcWWQtZWVl3JJoSVbUnvVgE4efk5CQwK2UlpSvd960jU0evLGRDGqo8tw3MPbW8RAmhU3VYg1oYIKAAL8FtYRWxZdU+Ozs7KvQKAUqAuwLslwdUP1I68HsD3ursv4buHfYfSAxKR7vUgp6eqbufw01oJYIFNVzlOR6KtiiH4UkW6Ma3yHLXv8tf2QWPTdBxDgcJ2BU+b5ePQuUI6g85BSs4SalKE/KWw5ImzYF7QGsNqJhLibiYD89Yfuxqaz0I1MZ+9GQUapVupSoDyyL+rjB7PRTXpSnLPouNcsy9KbhjJhhssO2ZSX1Hy0rZYP6R6j6pWpBDDU8GSByY8gNAS4vYduWH1L9S/1B7GhcsL1E54Yanpy2/fyQh1vRiv+wbZhC9cXeEEk0ThhoHmR5SoUSHgeIzIideCWaQChF7cL8/Pyr210JKspmSl5ens/un5pi1AlGbloagWEq8KNoSO0/asL4iojKZobcBAlEyvOrqqp8HoM9F/4Oyu7du4PerKGxA5IW8TmwKaMfGnEbnLpQC91VZmYmv4GktBDqYXhDUvYeugJQeQ71SLxF30+9EeXx1JzaurX7r44MGnAT+rEEgghOkUjKNIMhciclPH89DrnQXe2RkEXJ5/mqAgiY0uroGCXQ7mhoxHAgz0UXdoigAQf5sj76TgiGqG6jglF3y2Qy8T6rL/eRC92e9dEP0V6XTM7XVz+briEpKYlfg2x1wWpch/cfxAGi4Tnhw5X7Cras3MeSR88KWQRTDp6ixbb5nKKy8k4brfuK1HSurFAOss5JWMg+XLmfFT6734IuDGVEMz56JIRKSotRWidZG3XHKCktT95PLujvXF/1oFqKHnwr78pJglQlMiZREMEocgeESso6i1yYoBQWFrYB5z3yQlGVBlVlkEqA/gZh1ZCejA2rPUkEm6jRum0UROKiQwdQGTQIBkGhyC2LoNFYnjIp60oZpPIGEz13EyrFo7FR27kBXJ6L+uA5m33zczZ2d4w6d/W9k/djHh3VdXKiEWlf56k9Aq1M8dF3MmL1QbbNTuz4TSVBcBeF0grJAsmqKDrK9zDIqmhfRyPS5KoUWeVmimytao7/KTUmJoHqPmwDMhttaz27GboxZN4/cjJ8WrIFQiEqcGpqKnRFBJJST+j+kQ94BlM1wNtG3AI1bo0NITrvjkuAcGxl9xbJj8P1FkUPHgaj48Z66r9LAn9bnANMzUt2gkbiwWT2fV2zimBL+UCmmvc3AtGYmLH0nCANJBSYiBkoHrB0g5BP7UFDwnToDVJC6y1W+OiUpdz6NFp2tUN9FeDiddNtGGacUbqhMCZ2LPyg1rr/rslAbKj/++hL04vk/a0e8cXWdT6NMqRNWQI/qLVmjk9BMhh9QTIr97cC2NyvOQ/3OEfr74ExcfdCT0pu4sgDEz2p0ciCmNDkFZJ0qdVUI60AmsypTom58ylMz5/6OPSk5NEUf6M5odQzKdmerhu4Ny1el+pQftbmKf3L/Vx5GI0dRHzWhHnQk+rqWGEw9VDCNKz7omn4yrHkpblm78/bACQrBNG9liLy/OTFED5wEPRVUdBIMzzGR15AFMy+jvH5os0Sc2oB9kxsYeHh8HTqKuirSkt+DKKGRNPsXFsfz5njczTW77tyLcxtohHXcaPHw4xJc6CvacakufBQUjI9vuG8DMzvrB5+AaIrOxCgx5WnLfK0gfqIom4ZimVeyJ9EFbRCFrHwd2y7L1w/+du0PLwvmB8WFg6rl6/tExCpjGuW/w7CwsLo8bX8patT2r2R0uEb6y63aEZLLIscEgVZT/wKg0o43KiislEZI4dEUpetLP3FBVkdndMhQN42FFypmKEjZngcvPCU+YaESGWislEZ6V65dNnVqVGVTk97YnnlXb0gCFY8Q199ogpeeW0tNDY3wo0ggvebp3MgFuEJIGBvQ0o2vbDY0ZlzA5q5iEOkuWNEQV913AEb3l4PdWdPw/WsqFuiYVX689zyCB5zs07DIwU89ROHqAU+e1Fd/Wn4499/D2fO1sH1qCis13/9zIscIp/g1gUBwSN1afIxggj9pEI8O7GxqRG27twCxXt3wPWk6VNmgnFGmqc+Z3hvXCOmmrIDg0fq1vyBb/35HZoOJJPW9325F4p2fdjrrTEcm2TLFj8F4+75ibwrXxBcZlO2qUud7m5PwLgx9+0M/AlzMSvdmfo6KNpRCPsRZm/U9KkPw7wZ8zlEHJpyut2wdsXzT+Z1J89uAyT9Ldei7ycIuRil+VvUZIVv/fMN+O6oek/+B6JRd/4YUmalwl13jOLzVTMGthYmmX6RbXJANxUUgLI25loyMELn8Mf/sWL5ruI7+My2C0q/KoGeEIGbN9vIl3Q9FGUFHFVZtjK9d01C6603NljMmHE6XJmpvO5MHWz7dCsHqnYdSe75s+TpMHnCgxAVGcX3MYk50fTytS7I62pd50+qACSRW2s0kkHUCDkSY3rhyrcRxNLyEjiCy+qa4MxJM2rkKBhxewwkJY7j63DtkWUn0kNw2qCDk6UaQKVe2/CmEb/JKNBb8XBtPvzGxkaoqTkG1cdroK6uDmqOV/N9Z86e4UulIiMj+TJ2RCzv6MfExELMiBgOLhy3PaXh08E7MW+b4Gb5K55dYQOVFRKAsiwWi87d5Da4wY1Ahak0DyuhZK0uRri2ceUDxqcjhysBgF35+NqlM6rbmFQkgmjThGlsJpMpZPcBQgrQWwS0udmVKIJkQDhxQDOgC6CjXg6ue156I140CT9jDloVqccAIiapDOu2qv5h/UMKzFv/B5HGXtLdFG+4AAAAAElFTkSuQmCC",
+    "quickReplies": [
+      "Hello",
+      "How are You?"
+    ],
+    "theme": "dark",
+    "pricing": "",
+    "model": "gpt-3.5",
+    "subscription": false,
+    "public": true,
+    "status": "active",
+    "type": "dark",
+    "tokenUsage": 0,
+    "maxTokens": 10000000,
+    "id": "1426ef52-7816-4d93-99e6-69e01ee6785d",
+    "accessType": "free",
+    "createdAt": "2025-04-20T12:33:55.970Z"
   }
 ]
