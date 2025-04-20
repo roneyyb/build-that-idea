@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Settings, ExternalLink, Trash2, CheckCircle2, XCircle, Search, Filter } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -344,16 +345,15 @@ export default function AgentDashboard() {
                                         </button>
                                         <div className="flex items-center gap-1 ml-2">
                                             <span className={`text-xs font-semibold ${agent.status === 'active' ? 'text-emerald-600' : 'text-gray-400'}`}>{agent.status === 'active' ? 'Active' : 'Inactive'}</span>
-                                            <input
-                                                type="checkbox"
-                                                checked={agent.status === 'active'}
-                                                onChange={() => {
-                                                    const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
-                                                    setAgents(updated);
-                                                    localStorage.setItem('agents', JSON.stringify(updated));
-                                                }}
-                                                className="form-checkbox h-4 w-4 text-emerald-600 transition-colors"
-                                            />
+                                            <Switch
+  checked={agent.status === 'active'}
+  onChange={() => {
+    const updated = agents.map(a => a.createdAt === agent.createdAt ? { ...a, status: a.status === 'active' ? 'inactive' : 'active' } : a);
+    setAgents(updated);
+    localStorage.setItem('agents', JSON.stringify(updated));
+  }}
+  className="ml-2"
+/>
                                         </div>
                                         <button
                                             className="p-2 rounded-lg text-gray-400 hover:text-red-500 transition-colors"

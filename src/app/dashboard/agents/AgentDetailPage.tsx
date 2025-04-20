@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Toggle } from "@/components/ui/toggle";
+import { Switch } from "@/components/ui/switch";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from "recharts";
 import { Edit, Copy } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -78,6 +78,7 @@ export default function AgentDetailPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
                 <div className="w-full max-w-4xl p-8 space-y-8">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-6">Agent Details</h1>
                     <div className="relative overflow-hidden bg-gradient-to-r from-gray-100 to-gray-200 rounded-2xl shadow p-8">
                         <div className="flex items-center gap-6">
                             <Skeleton className="rounded-2xl w-20 h-20 bg-gray-300/30" />
@@ -119,6 +120,8 @@ export default function AgentDetailPage() {
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-6">
             {/* Hero Header */}
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">Agent Details</h1>
+
             <div className="relative overflow-hidden bg-gradient-to-r from-gray-50 to-blue-50 rounded-2xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl">
                 <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
                 <div className="relative z-10">
@@ -152,9 +155,9 @@ export default function AgentDetailPage() {
                                 Edit
                             </Button>
                             <div className="flex items-center gap-3 bg-gray-100 rounded-full px-4 py-2">
-                                <Toggle
-                                    pressed={enabled}
-                                    onPressedChange={handleToggle}
+                                <Switch
+                                    checked={enabled}
+                                    onChange={() => handleToggle(!enabled)}
                                     className="data-[state=on]:bg-green-500"
                                 />
                                 <span className="text-gray-800 text-sm font-medium">

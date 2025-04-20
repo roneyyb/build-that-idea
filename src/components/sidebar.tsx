@@ -1,16 +1,16 @@
 "use client"
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-    LayoutDashboard,
-    Users,
+    ChevronLeft,
+    ChevronRight,
     DollarSign,
     HelpCircle,
+    LayoutDashboard,
     LogOut,
-    ListCollapseIcon,
-    StepBackIcon
+    Users
 } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const sidebarItems = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
@@ -29,7 +29,7 @@ export function Sidebar() {
         <div
             className={cn(
                 "flex h-screen flex-col justify-between bg-white p-4  transition-all duration-300",
-                collapsed ? "min-w-[64px] w-[64px]" : "min-w-[260px] w-[260px]"
+                collapsed ? "min-w-[64px] w-[64px]" : "min-w-[260px] w-[300px]"
             )}
         >
             <div className="space-y-4">
@@ -38,17 +38,17 @@ export function Sidebar() {
                         <img
                             src="https://buildthatidea.com/_next/static/media/logo.093f0b47.png"
                             alt="Build That Idea Logo"
-                            className={cn("h-10 w-auto transition-all duration-300", collapsed && "h-8")}
+                            className={cn("h-9 w-auto transition-all duration-300", collapsed && "h-8")}
                             style={{ display: collapsed ? "none" : "block" }}
                         />
                     </div>
                     <button
                         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-                        className="ml-2 p-1 rounded hover:bg-[#F7F7F7] transition-colors"
+                        className="rounded  ml-10 transition-colors"
                         onClick={() => setCollapsed((c) => !c)}
-                        style={{ position: "absolute", left: collapsed ? 16 : 230, top: 20, zIndex: 10 }}
+                        style={{ zIndex: 10 }}
                     >
-                        <StepBackIcon />
+                        {!collapsed ? <ChevronLeft color='grey' /> : <ChevronRight color='grey' />}
                     </button>
                 </div>
                 {!collapsed && (

@@ -1,5 +1,7 @@
 import { useFormContext } from "react-hook-form";
 
+import { Switch } from '@/components/ui/switch';
+
 export function MonetizationStep() {
     const { register, setValue, watch } = useFormContext();
     const form = watch();
@@ -28,13 +30,11 @@ export function MonetizationStep() {
                 </select>
             </div>
             <div className="mb-4 flex items-center">
-                <input
-                    type="checkbox"
-                    checked={!!form.subscription}
-                    onChange={e => setValue("subscription", e.target.checked, { shouldDirty: true })}
-                    className="mr-2"
-                />
-                <label className="text-sm font-bold text-[#020817]">Enable subscription features</label>
+                <Switch
+  checked={!!form.subscription}
+  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue("subscription", e.target.checked, { shouldDirty: true })}
+  label="Enable subscription features"
+/>
             </div>
         </div>
     );
